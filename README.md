@@ -13,7 +13,7 @@ It is deliberately separate from air-pollution integrations: these are biologica
 - Home Assistant history and long-term statistics from installation onward;
 - a read-only `vilnius_allergens.query_history` action for bounded, pre-existing official history. It does **not** import historical source records into Recorder.
 
-All measurements use the source/frontend unit `vnt./m³` (pollen units per cubic metre). A null source value remains `unknown`; no thresholds or medical advice are invented. The risk enums reproduce the four source-published Miesto Plaučiai bands and remain separate from raw measurements. This makes them suitable for automations and dashboard labels; choose any colour presentation in the dashboard without redefining the underlying data. The source's legacy `Pollen` field is deliberately excluded: it stopped receiving values after December 2021 and is not used by Miesto Plaučiai.
+All measurements use the source/frontend unit `vnt./m³` (pollen units per cubic metre). Sensor states are rounded to one decimal place for useful display and statistics; the exact upstream number remains in the `source_value` attribute. A null source value remains `unknown`; no thresholds or medical advice are invented. The risk enums reproduce the four source-published Miesto Plaučiai bands and remain separate from raw measurements. This makes them suitable for automations and dashboard labels; choose any colour presentation in the dashboard without redefining the underlying data. The source's legacy `Pollen` field is deliberately excluded: it stopped receiving values after December 2021 and is not used by Miesto Plaučiai.
 
 ## Historical source access
 
@@ -39,4 +39,4 @@ The integration makes an unauthenticated HTTPS request to the public Vilnius Ope
 
 ## Status and limitations
 
-The upstream source presents hourly rows, while its service metadata also mentions 12-hour accumulation. This integration reports source values exactly as received and makes no claim about that unresolved aggregation methodology. Total pollen is currently often null upstream.
+The upstream source presents hourly rows, while its service metadata also mentions 12-hour accumulation. This integration reports source values rounded to one decimal for Home Assistant display and makes no claim about that unresolved aggregation methodology. Total pollen is currently often null upstream.

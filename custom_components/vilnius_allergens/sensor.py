@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from typing import Any
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
@@ -15,7 +16,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .api import timestamp_from_arcgis
 from .const import DOMAIN, MANUFACTURER, MAX_MEASUREMENT_AGE, MODEL, POLLEN_UNIT, RISK_OPTIONS, SOURCE_RISK_LIMITS, TIMESTAMP_FIELD
 from .coordinator import VilniusAllergensCoordinator
-from .risk import symptom_risk
+from .risk import displayed_concentration, symptom_risk
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -78,7 +79,7 @@ class BaseSensor(CoordinatorEntity[VilniusAllergensCoordinator], SensorEntity):
         return datetime.now(timezone.utc) - timestamp <= MAX_MEASUREMENT_AGE
 
     @property
-    def extra_state_attributes(self) -> dict[str, str]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         timestamp = timestamp_from_arcgis(self.coordinator.data[TIMESTAMP_FIELD])
         return {"source": "Vilnius OpenCity Bioaerozoliai layer 0", "measurement_timestamp": timestamp.isoformat()}
 
@@ -88,7 +89,14 @@ class PollenSensor(BaseSensor):
     def __init__(self, coordinator: VilniusAllergensCoordinator, description: PollenDescription) -> None:
         super().__init__(coordinator); self.entity_description = description; self._attr_unique_id = f"vilnius_bioaerosol_{description.key}"
     @property
-    def native_value(self): return self.coordinator.data.get(self.entity_description.field)
+    def native_value(self) -> float | None:
+        return displayed_concentration(self.coordinator.data.get(self.entity_description.field))
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        attributes = super().extra_state_attributes
+        attributes["source_value"] = self.coordinator.data.get(self.entity_description.field)
+        return attributes
 
 
 class LastMeasurementSensor(BaseSensor):

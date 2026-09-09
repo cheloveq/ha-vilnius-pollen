@@ -11,3 +11,8 @@ def symptom_risk(value: float | int | None, limits: tuple[float, float, float]) 
         if value <= limit:
             return label
     return RISK_OPTIONS[-1]
+
+
+def displayed_concentration(value: float | int | None) -> float | None:
+    """Round a source concentration to the precision useful in Home Assistant."""
+    return None if value is None else round(value, 1)

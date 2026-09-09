@@ -20,7 +20,7 @@ for name in ("const", "api", "risk"):
     spec.loader.exec_module(module)
 
 from vilnius_allergens.api import VilniusAllergensApi, VilniusAllergensApiError, timestamp_from_arcgis
-from vilnius_allergens.risk import symptom_risk
+from vilnius_allergens.risk import displayed_concentration, symptom_risk
 
 
 class Response:
@@ -72,3 +72,9 @@ def test_source_symptom_risk_bands_and_null():
     limits = (15, 31, 50)
     assert [symptom_risk(value, limits) for value in (0, 15, 16, 31, 32, 50, 51)] == ["low", "low", "medium", "medium", "high", "high", "very_high"]
     assert symptom_risk(None, limits) is None
+
+
+def test_concentration_display_rounding_preserves_null():
+    assert displayed_concentration(162.6000061) == 162.6
+    assert displayed_concentration(0) == 0
+    assert displayed_concentration(None) is None
