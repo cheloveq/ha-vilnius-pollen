@@ -1,0 +1,19 @@
+{
+  "entity": {
+    "sensor": {
+      "alder": {"default": "mdi:tree"},
+      "birch": {"default": "mdi:tree"},
+      "hazel": {"default": "mdi:tree"},
+      "grass": {"default": "mdi:grass"},
+      "mugwort": {"default": "mdi:flower-pollen"},
+      "ragweed": {"default": "mdi:flower-pollen"},
+      "alder_risk": {"default": "mdi:allergy"},
+      "birch_risk": {"default": "mdi:allergy"},
+      "hazel_risk": {"default": "mdi:allergy"},
+      "grass_risk": {"default": "mdi:allergy"},
+      "mugwort_risk": {"default": "mdi:allergy"},
+      "ragweed_risk": {"default": "mdi:allergy"},
+      "last_measurement": {"default": "mdi:clock-outline"}
+    }
+  }
+}
