@@ -53,9 +53,9 @@ def test_latest_rejects_empty_source_response():
 
 
 def test_history_is_bounded_ascending_and_preserves_nulls():
-    session = Session({"features": [{"attributes": {"timestamp": 1000, "Pollen": None}}]})
+    session = Session({"features": [{"attributes": {"timestamp": 1000, "Alnus": None}}]})
     records = asyncio.run(VilniusAllergensApi(session).async_history(datetime(2026, 1, 1, tzinfo=UTC), datetime(2026, 1, 2, tzinfo=UTC), 3))
-    assert records == [{"timestamp": 1000, "Pollen": None}]
+    assert records == [{"timestamp": 1000, "Alnus": None}]
     params = session.calls[0][1]
     assert params["orderByFields"] == "timestamp ASC"
     assert params["resultRecordCount"] == "3"

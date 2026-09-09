@@ -12,6 +12,6 @@ UPDATE_INTERVAL: Final = timedelta(minutes=5)
 MAX_MEASUREMENT_AGE: Final = timedelta(hours=3)
 POLLEN_UNIT: Final = "vnt./m³"
 TIMESTAMP_FIELD: Final = "timestamp"
-DATA_FIELDS: Final = ("Alnus", "Ambrosia", "Artemisia", "Betula", "Corylus", "Poaceae", "Pollen")
+DATA_FIELDS: Final = ("Alnus", "Ambrosia", "Artemisia", "Betula", "Corylus", "Poaceae")
 SERVICE_QUERY_HISTORY: Final = "query_history"
 MAX_HISTORY_RECORDS: Final = 2_000

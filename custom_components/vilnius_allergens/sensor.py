@@ -29,7 +29,6 @@ DESCRIPTIONS = (
     PollenDescription(key="birch", translation_key="birch", field="Betula", native_unit_of_measurement=POLLEN_UNIT, state_class=SensorStateClass.MEASUREMENT),
     PollenDescription(key="hazel", translation_key="hazel", field="Corylus", native_unit_of_measurement=POLLEN_UNIT, state_class=SensorStateClass.MEASUREMENT),
     PollenDescription(key="grass", translation_key="grass", field="Poaceae", native_unit_of_measurement=POLLEN_UNIT, state_class=SensorStateClass.MEASUREMENT),
-    PollenDescription(key="total", translation_key="total", field="Pollen", native_unit_of_measurement=POLLEN_UNIT, state_class=SensorStateClass.MEASUREMENT),
 )
 TIMESTAMP = SensorEntityDescription(key="last_measurement", translation_key="last_measurement", device_class=SensorDeviceClass.TIMESTAMP)
 

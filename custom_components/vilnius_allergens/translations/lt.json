@@ -3,6 +3,6 @@
   "entity": {"sensor": {
     "alder": {"name": "Alksnio žiedadulkės"}, "ragweed": {"name": "Ambrozijos žiedadulkės"}, "mugwort": {"name": "Kiečio žiedadulkės"},
     "birch": {"name": "Beržo žiedadulkės"}, "hazel": {"name": "Lazdyno žiedadulkės"}, "grass": {"name": "Miglinių žiedadulkės"},
-    "total": {"name": "Visos žiedadulkės"}, "last_measurement": {"name": "Paskutinis matavimas"}
+    "last_measurement": {"name": "Paskutinis matavimas"}
   }}
 }
