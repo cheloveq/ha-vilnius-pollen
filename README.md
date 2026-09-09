@@ -1,3 +1,5 @@
+<p align="center"><img src="logo.png" width="160" alt="Vilnius Allergens logo"></p>
+
 # Vilnius Allergens
 
 Home Assistant integration for authoritative, Vilnius-wide pollen measurements from the public [Vilnius OpenCity Bioaerozoliai](https://opencity.idvilnius.lt/atviras/rest/services/Aplinka/Bioaerozoliai/MapServer) service.
