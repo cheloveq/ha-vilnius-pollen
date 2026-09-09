@@ -1,0 +1,8 @@
+{
+  "config": {"step": {"user": {"description": "Add the official Vilnius-wide pollen measurement source."}}},
+  "entity": {"sensor": {
+    "alder": {"name": "Alder pollen"}, "ragweed": {"name": "Ragweed pollen"}, "mugwort": {"name": "Mugwort pollen"},
+    "birch": {"name": "Birch pollen"}, "hazel": {"name": "Hazel pollen"}, "grass": {"name": "Grass pollen"},
+    "total": {"name": "Total pollen"}, "last_measurement": {"name": "Last measurement"}
+  }}
+}
