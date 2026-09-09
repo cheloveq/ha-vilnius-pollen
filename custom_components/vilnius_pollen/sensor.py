@@ -1,4 +1,4 @@
-"""Sensors for Vilnius Allergens."""
+"""Sensors for Vilnius Pollen."""
 
 from __future__ import annotations
 
@@ -15,7 +15,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .api import timestamp_from_arcgis
 from .const import DOMAIN, MANUFACTURER, MAX_MEASUREMENT_AGE, MODEL, POLLEN_UNIT, RISK_OPTIONS, SOURCE_RISK_LIMITS, TIMESTAMP_FIELD
-from .coordinator import VilniusAllergensCoordinator
+from .coordinator import VilniusPollenCoordinator
 from .risk import displayed_concentration, symptom_risk
 
 
@@ -53,7 +53,7 @@ RISK_DESCRIPTIONS = tuple(
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
-    coordinator: VilniusAllergensCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator: VilniusPollenCoordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_entities(
         [PollenSensor(coordinator, description) for description in DESCRIPTIONS]
         + [SymptomRiskSensor(coordinator, description) for description in RISK_DESCRIPTIONS]
@@ -61,11 +61,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     )
 
 
-class BaseSensor(CoordinatorEntity[VilniusAllergensCoordinator], SensorEntity):
+class BaseSensor(CoordinatorEntity[VilniusPollenCoordinator], SensorEntity):
     _attr_has_entity_name = True
-    def __init__(self, coordinator: VilniusAllergensCoordinator) -> None:
+    def __init__(self, coordinator: VilniusPollenCoordinator) -> None:
         super().__init__(coordinator)
-        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "vilnius-bioaerosol-site")}, manufacturer=MANUFACTURER, model=MODEL, name="Vilnius Allergens")
+        self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "vilnius-bioaerosol-site")}, manufacturer=MANUFACTURER, model=MODEL, name="Vilnius Pollen")
 
     @property
     def available(self) -> bool:
@@ -86,7 +86,7 @@ class BaseSensor(CoordinatorEntity[VilniusAllergensCoordinator], SensorEntity):
 
 class PollenSensor(BaseSensor):
     entity_description: PollenDescription
-    def __init__(self, coordinator: VilniusAllergensCoordinator, description: PollenDescription) -> None:
+    def __init__(self, coordinator: VilniusPollenCoordinator, description: PollenDescription) -> None:
         super().__init__(coordinator); self.entity_description = description; self._attr_unique_id = f"vilnius_bioaerosol_{description.key}"
     @property
     def native_value(self) -> float | None:
@@ -101,7 +101,7 @@ class PollenSensor(BaseSensor):
 
 class LastMeasurementSensor(BaseSensor):
     entity_description = TIMESTAMP
-    def __init__(self, coordinator: VilniusAllergensCoordinator) -> None:
+    def __init__(self, coordinator: VilniusPollenCoordinator) -> None:
         super().__init__(coordinator); self._attr_unique_id = "vilnius_bioaerosol_last_measurement"
     @property
     def native_value(self): return timestamp_from_arcgis(self.coordinator.data[TIMESTAMP_FIELD])
@@ -112,7 +112,7 @@ class SymptomRiskSensor(BaseSensor):
 
     entity_description: RiskDescription
 
-    def __init__(self, coordinator: VilniusAllergensCoordinator, description: RiskDescription) -> None:
+    def __init__(self, coordinator: VilniusPollenCoordinator, description: RiskDescription) -> None:
         super().__init__(coordinator); self.entity_description = description; self._attr_unique_id = f"vilnius_bioaerosol_{description.key}"
 
     @property

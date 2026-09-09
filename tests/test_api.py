@@ -9,18 +9,18 @@ from pathlib import Path
 
 import pytest
 
-component = Path(__file__).parents[1] / "custom_components" / "vilnius_allergens"
-package = types.ModuleType("vilnius_allergens")
+component = Path(__file__).parents[1] / "custom_components" / "vilnius_pollen"
+package = types.ModuleType("vilnius_pollen")
 package.__path__ = [str(component)]
-sys.modules["vilnius_allergens"] = package
+sys.modules["vilnius_pollen"] = package
 for name in ("const", "api", "risk"):
-    spec = importlib.util.spec_from_file_location(f"vilnius_allergens.{name}", component / f"{name}.py")
+    spec = importlib.util.spec_from_file_location(f"vilnius_pollen.{name}", component / f"{name}.py")
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
 
-from vilnius_allergens.api import VilniusAllergensApi, VilniusAllergensApiError, timestamp_from_arcgis
-from vilnius_allergens.risk import displayed_concentration, symptom_risk
+from vilnius_pollen.api import VilniusPollenApi, VilniusPollenApiError, timestamp_from_arcgis
+from vilnius_pollen.risk import displayed_concentration, symptom_risk
 
 
 class Response:
@@ -42,20 +42,20 @@ def test_timestamp_is_aware_utc():
 
 def test_latest_uses_descending_non_geometric_query():
     session = Session({"features": [{"attributes": {"timestamp": 1, "Artemisia": 2.5}}]})
-    result = asyncio.run(VilniusAllergensApi(session).async_latest())
+    result = asyncio.run(VilniusPollenApi(session).async_latest())
     assert result == {"timestamp": 1, "Artemisia": 2.5}
     assert session.calls[0][1]["orderByFields"] == "timestamp DESC"
     assert session.calls[0][1]["returnGeometry"] == "false"
 
 
 def test_latest_rejects_empty_source_response():
-    with pytest.raises(VilniusAllergensApiError):
-        asyncio.run(VilniusAllergensApi(Session({"features": []})).async_latest())
+    with pytest.raises(VilniusPollenApiError):
+        asyncio.run(VilniusPollenApi(Session({"features": []})).async_latest())
 
 
 def test_history_is_bounded_ascending_and_preserves_nulls():
     session = Session({"features": [{"attributes": {"timestamp": 1000, "Alnus": None}}]})
-    records = asyncio.run(VilniusAllergensApi(session).async_history(datetime(2026, 1, 1, tzinfo=UTC), datetime(2026, 1, 2, tzinfo=UTC), 3))
+    records = asyncio.run(VilniusPollenApi(session).async_history(datetime(2026, 1, 1, tzinfo=UTC), datetime(2026, 1, 2, tzinfo=UTC), 3))
     assert records == [{"timestamp": 1000, "Alnus": None}]
     params = session.calls[0][1]
     assert params["orderByFields"] == "timestamp ASC"
@@ -63,8 +63,8 @@ def test_history_is_bounded_ascending_and_preserves_nulls():
 
 
 def test_history_rejects_invalid_range():
-    api = VilniusAllergensApi(Session({}))
-    with pytest.raises(VilniusAllergensApiError):
+    api = VilniusPollenApi(Session({}))
+    with pytest.raises(VilniusPollenApiError):
         asyncio.run(api.async_history(datetime(2026, 1, 2, tzinfo=UTC), datetime(2026, 1, 1, tzinfo=UTC), 1))
 
 

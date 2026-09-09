@@ -1,10 +1,10 @@
-"""Constants for Vilnius Allergens."""
+"""Constants for Vilnius Pollen."""
 
 from datetime import timedelta
 from typing import Final
 
-DOMAIN: Final = "vilnius_allergens"
-NAME: Final = "Vilnius Allergens"
+DOMAIN: Final = "vilnius_pollen"
+NAME: Final = "Vilnius Pollen"
 MANUFACTURER: Final = "Vilnius City"
 MODEL: Final = "Vilnius bioaerosol monitoring site"
 LAYER_URL: Final = "https://opencity.idvilnius.lt/atviras/rest/services/Aplinka/Bioaerozoliai/MapServer/0"

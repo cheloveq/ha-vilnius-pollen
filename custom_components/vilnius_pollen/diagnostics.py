@@ -1,4 +1,4 @@
-"""Diagnostics for Vilnius Allergens."""
+"""Diagnostics for Vilnius Pollen."""
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant

@@ -1,4 +1,4 @@
-"""Vilnius Allergens integration."""
+"""Vilnius Pollen integration."""
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers import config_validation as cv
@@ -7,14 +7,14 @@ from homeassistant.helpers.service import SupportsResponse
 
 import voluptuous as vol
 
-from .api import VilniusAllergensApiError, timestamp_from_arcgis
+from .api import VilniusPollenApiError, timestamp_from_arcgis
 from .const import DOMAIN, MAX_HISTORY_RECORDS, SERVICE_QUERY_HISTORY
-from .coordinator import VilniusAllergensCoordinator
+from .coordinator import VilniusPollenCoordinator
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up Vilnius Allergens."""
-    coordinator = VilniusAllergensCoordinator(hass)
+    """Set up Vilnius Pollen."""
+    coordinator = VilniusPollenCoordinator(hass)
     await coordinator.async_config_entry_first_refresh()
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
     _async_register_history_service(hass)
@@ -23,7 +23,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload Vilnius Allergens."""
+    """Unload Vilnius Pollen."""
     unloaded = await hass.config_entries.async_unload_platforms(entry, ["sensor"])
     if unloaded:
         hass.data[DOMAIN].pop(entry.entry_id)
@@ -42,7 +42,7 @@ def _async_register_history_service(hass: HomeAssistant) -> None:
         coordinator = next(iter(hass.data[DOMAIN].values()))
         try:
             records = await coordinator._api.async_history(start, end, limit)
-        except VilniusAllergensApiError as err:
+        except VilniusPollenApiError as err:
             raise vol.Invalid(str(err)) from err
         return {
             "source": "Vilnius OpenCity Bioaerozoliai layer 0",

@@ -1,11 +1,11 @@
-"""Config flow for Vilnius Allergens."""
+"""Config flow for Vilnius Pollen."""
 
 from homeassistant import config_entries
 
 from .const import DOMAIN, NAME
 
 
-class VilniusAllergensConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class VilniusPollenConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """One-click setup for the single Vilnius-wide source."""
 
     VERSION = 1
