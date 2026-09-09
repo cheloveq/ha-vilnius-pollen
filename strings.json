@@ -3,6 +3,12 @@
   "entity": {"sensor": {
     "alder": {"name": "Alder pollen"}, "ragweed": {"name": "Ragweed pollen"}, "mugwort": {"name": "Mugwort pollen"},
     "birch": {"name": "Birch pollen"}, "hazel": {"name": "Hazel pollen"}, "grass": {"name": "Grass pollen"},
+    "alder_risk": {"name": "Alder symptom risk", "state": {"low": "Low", "medium": "Medium", "high": "High", "very_high": "Very high"}},
+    "ragweed_risk": {"name": "Ragweed symptom risk", "state": {"low": "Low", "medium": "Medium", "high": "High", "very_high": "Very high"}},
+    "mugwort_risk": {"name": "Mugwort symptom risk", "state": {"low": "Low", "medium": "Medium", "high": "High", "very_high": "Very high"}},
+    "birch_risk": {"name": "Birch symptom risk", "state": {"low": "Low", "medium": "Medium", "high": "High", "very_high": "Very high"}},
+    "hazel_risk": {"name": "Hazel symptom risk", "state": {"low": "Low", "medium": "Medium", "high": "High", "very_high": "Very high"}},
+    "grass_risk": {"name": "Grass symptom risk", "state": {"low": "Low", "medium": "Medium", "high": "High", "very_high": "Very high"}},
     "last_measurement": {"name": "Last measurement"}
   }}
 }

@@ -9,10 +9,11 @@ It is deliberately separate from air-pollution integrations: these are biologica
 - one-click setup: **Settings → Devices & services → Add integration → Vilnius Allergens**;
 - hourly raw concentrations for alder, ragweed, mugwort, birch, hazel, and grass;
 - a source timestamp and freshness-based availability (measurements older than three hours become unavailable);
+- a separate, source-derived **symptom risk** enum (`low`, `medium`, `high`, `very_high`) for every taxon;
 - Home Assistant history and long-term statistics from installation onward;
 - a read-only `vilnius_allergens.query_history` action for bounded, pre-existing official history. It does **not** import historical source records into Recorder.
 
-All measurements use the source/frontend unit `vnt./m³` (pollen units per cubic metre). A null source value remains `unknown`; no thresholds or medical advice are invented. The source's legacy `Pollen` field is deliberately excluded: it stopped receiving values after December 2021 and is not used by Miesto Plaučiai.
+All measurements use the source/frontend unit `vnt./m³` (pollen units per cubic metre). A null source value remains `unknown`; no thresholds or medical advice are invented. The risk enums reproduce the four source-published Miesto Plaučiai bands and remain separate from raw measurements. This makes them suitable for automations and dashboard labels; choose any colour presentation in the dashboard without redefining the underlying data. The source's legacy `Pollen` field is deliberately excluded: it stopped receiving values after December 2021 and is not used by Miesto Plaučiai.
 
 ## Historical source access
 
