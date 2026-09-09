@@ -1,0 +1,8 @@
+{
+  "config": {"step": {"user": {"description": "Pridėti oficialų Vilniaus žiedadulkių matavimo šaltinį."}}},
+  "entity": {"sensor": {
+    "alder": {"name": "Alksnio žiedadulkės"}, "ragweed": {"name": "Ambrozijos žiedadulkės"}, "mugwort": {"name": "Kiečio žiedadulkės"},
+    "birch": {"name": "Beržo žiedadulkės"}, "hazel": {"name": "Lazdyno žiedadulkės"}, "grass": {"name": "Miglinių žiedadulkės"},
+    "total": {"name": "Visos žiedadulkės"}, "last_measurement": {"name": "Paskutinis matavimas"}
+  }}
+}
