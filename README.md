@@ -1,25 +1,48 @@
-<p align="center"><img src="logo.png" width="160" alt="Vilnius Allergens logo"></p>
+<p align="center"><img src="logo.png" width="180" alt="Vilnius Allergens logo"></p>
 
-# Vilnius Allergens
+<h1 align="center">Vilnius Allergens</h1>
 
-Home Assistant integration for authoritative, Vilnius-wide pollen measurements from the public [Vilnius OpenCity Bioaerozoliai](https://opencity.idvilnius.lt/atviras/rest/services/Aplinka/Bioaerozoliai/MapServer) service.
+<p align="center">Authoritative Vilnius pollen measurements for Home Assistant.</p>
 
-It is deliberately separate from air-pollution integrations: these are biological-allergen measurements from one dedicated site, not conventional atmospheric pollutants or forecasts.
+`Vilnius Allergens` is a lightweight Home Assistant custom integration for the public [Vilnius OpenCity Bioaerozoliai](https://opencity.idvilnius.lt/atviras/rest/services/Aplinka/Bioaerozoliai/MapServer) service. It reports real measurements from Vilnius's dedicated bioaerosol monitoring site—no account, API key, coordinates, or forecast model required.
 
-## What it provides
+It intentionally complements, rather than combines with, [ha-miesto-plauciai](https://github.com/untitledlt/ha-miesto-plauciai): that project covers conventional outdoor air pollution; this one covers biological allergens. Its integration structure and visual identity were inspired by `ha-miesto-plauciai`; the implementation, pollen data model, history access, and branding assets are maintained separately.
 
-- one-click setup: **Settings → Devices & services → Add integration → Vilnius Allergens**;
-- hourly raw concentrations for alder, ragweed, mugwort, birch, hazel, and grass;
-- a source timestamp and freshness-based availability (measurements older than three hours become unavailable);
-- a separate, source-derived **symptom risk** enum (`low`, `medium`, `high`, `very_high`) for every taxon;
-- Home Assistant history and long-term statistics from installation onward;
-- a read-only `vilnius_allergens.query_history` action for bounded, pre-existing official history. It does **not** import historical source records into Recorder.
+## Features
 
-All measurements use the source/frontend unit `vnt./m³` (pollen units per cubic metre). Sensor states are rounded to one decimal place for useful display and statistics; the exact upstream number remains in the `source_value` attribute. A null source value remains `unknown`; no thresholds or medical advice are invented. The risk enums reproduce the four source-published Miesto Plaučiai bands and remain separate from raw measurements. This makes them suitable for automations and dashboard labels; choose any colour presentation in the dashboard without redefining the underlying data. The source's legacy `Pollen` field is deliberately excluded: it stopped receiving values after December 2021 and is not used by Miesto Plaučiai.
+- One-click setup: **Settings → Devices & services → Add integration → Vilnius Allergens**.
+- Hourly measurements for alder, birch, grass, hazel, mugwort, and ragweed pollen.
+- A separate source-derived **symptom-risk** label—Low, Medium, High, or Very high—for each taxon.
+- A source timestamp, five-minute coordinated polling, and availability protection when a measurement is more than three hours old.
+- Recorder history and long-term statistics from installation onward.
+- `vilnius_allergens.query_history`: a bounded, read-only action for querying pre-existing official history without importing it into Home Assistant Recorder.
+- English and Lithuanian translations, diagnostics, and local Home Assistant brand assets.
 
-## Historical source access
+## Install with HACS
 
-Layer 0 is the hourly source series. The upstream frontend queries it directly with UTC date bounds and pagination. Use the action in Developer Tools when external history is needed:
+1. In HACS, open **Integrations** and choose the three-dot menu → **Custom repositories**.
+2. Add `https://github.com/cheloveq/ha-vilnius-allergens` as an **Integration**.
+3. Search for **Vilnius Allergens**, install it, and restart Home Assistant.
+4. Go to **Settings → Devices & services → Add integration**, select **Vilnius Allergens**, then finish the one-click flow.
+
+## Manual installation
+
+Copy `custom_components/vilnius_allergens` into your Home Assistant `config/custom_components` directory, restart Home Assistant, then add **Vilnius Allergens** through the UI.
+
+## Entities and data semantics
+
+Each taxon has two entities:
+
+- A numeric pollen concentration in `vnt./m³`, with Home Assistant's `measurement` state class for history and statistics.
+- A separately named source-derived risk enum. It is an attributed presentation of Miesto Plaučiai's published bands, not medical advice and not a replacement for the measured concentration.
+
+Concentrations are rounded to one decimal place for useful display and statistics. The exact upstream float remains available as the entity's `source_value` attribute; risk banding uses that unrounded source value. A source null remains `unknown`.
+
+The layer-0 `Pollen` “total” field is intentionally excluded. It stopped receiving values in December 2021 and is not displayed by Miesto Plaučiai.
+
+## Official source history
+
+Layer 0 is the hourly source series. Its frontend uses UTC date bounds and pagination. Query a bounded period from **Developer tools → Actions**:
 
 ```yaml
 action: vilnius_allergens.query_history
@@ -29,16 +52,20 @@ data:
   limit: 500
 ```
 
-The action returns at most 2,000 records in ascending timestamp order. Layer 1 is a different daily source series with undocumented aggregation semantics; it is intentionally not exposed as V1 sensors.
+The action returns up to 2,000 ordered source records. It does not backfill Home Assistant Recorder. Layer 1 is a different daily dataset with undocumented aggregation semantics and is deliberately not exposed as V1 sensor entities.
 
-## Installation
+## Privacy, limitations, and attribution
 
-Until a GitHub/HACS release exists, copy `custom_components/vilnius_allergens` into your Home Assistant `config/custom_components` directory, restart Home Assistant, then add the integration through the UI. No API key, coordinates, or account is required.
+The integration makes an unauthenticated HTTPS request to the public Vilnius OpenCity service every five minutes. It sends no account data, location, or credentials; source history is requested only when the explicit action runs.
 
-## Data and privacy
+The source presents hourly rows while its service metadata also refers to 12-hour accumulation. This integration reports the source measurements without asserting an unresolved aggregation methodology. It does not provide medical guidance.
 
-The integration makes an unauthenticated HTTPS request to the public Vilnius OpenCity layer every five minutes. It sends no location, account data, or credentials. Source history is queried only when the explicit action is called.
+Data source: [Vilnius OpenCity Bioaerozoliai](https://opencity.idvilnius.lt/atviras/rest/services/Aplinka/Bioaerozoliai/MapServer). The project was inspired by [untitledlt/ha-miesto-plauciai](https://github.com/untitledlt/ha-miesto-plauciai), which remains the appropriate companion integration for Vilnius air pollution.
 
-## Status and limitations
+## Development
 
-The upstream source presents hourly rows, while its service metadata also mentions 12-hour accumulation. This integration reports source values rounded to one decimal for Home Assistant display and makes no claim about that unresolved aggregation methodology. Total pollen is currently often null upstream.
+```bash
+python -m pytest -q
+```
+
+The project is licensed under the [MIT License](LICENSE).
