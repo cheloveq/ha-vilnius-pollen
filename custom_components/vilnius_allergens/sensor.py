@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 
 from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorEntityDescription, SensorStateClass
 from homeassistant.config_entries import ConfigEntry
@@ -12,7 +13,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .api import timestamp_from_arcgis
-from .const import DOMAIN, MANUFACTURER, MODEL, POLLEN_UNIT, TIMESTAMP_FIELD
+from .const import DOMAIN, MANUFACTURER, MAX_MEASUREMENT_AGE, MODEL, POLLEN_UNIT, TIMESTAMP_FIELD
 from .coordinator import VilniusAllergensCoordinator
 
 
@@ -43,6 +44,22 @@ class BaseSensor(CoordinatorEntity[VilniusAllergensCoordinator], SensorEntity):
     def __init__(self, coordinator: VilniusAllergensCoordinator) -> None:
         super().__init__(coordinator)
         self._attr_device_info = DeviceInfo(identifiers={(DOMAIN, "vilnius-bioaerosol-site")}, manufacturer=MANUFACTURER, model=MODEL, name="Vilnius Allergens")
+
+    @property
+    def available(self) -> bool:
+        """Do not present an old upstream measurement as a fresh reading."""
+        if not super().available or not self.coordinator.data:
+            return False
+        try:
+            timestamp = timestamp_from_arcgis(self.coordinator.data[TIMESTAMP_FIELD])
+        except (KeyError, TypeError, ValueError, OSError):
+            return False
+        return datetime.now(timezone.utc) - timestamp <= MAX_MEASUREMENT_AGE
+
+    @property
+    def extra_state_attributes(self) -> dict[str, str]:
+        timestamp = timestamp_from_arcgis(self.coordinator.data[TIMESTAMP_FIELD])
+        return {"source": "Vilnius OpenCity Bioaerozoliai layer 0", "measurement_timestamp": timestamp.isoformat()}
 
 
 class PollenSensor(BaseSensor):

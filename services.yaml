@@ -1,0 +1,19 @@
+query_history:
+  name: Query official pollen history
+  description: Returns a bounded UTC time range from the official Vilnius source without importing it into Recorder.
+  fields:
+    start:
+      required: true
+      selector:
+        datetime: {}
+    end:
+      required: true
+      selector:
+        datetime: {}
+    limit:
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 2000
+          mode: box
