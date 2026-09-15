@@ -7,12 +7,26 @@ DOMAIN: Final = "vilnius_pollen"
 NAME: Final = "Vilnius Pollen"
 MANUFACTURER: Final = "Vilnius City"
 MODEL: Final = "Vilnius bioaerosol monitoring site"
-LAYER_URL: Final = "https://opencity.idvilnius.lt/atviras/rest/services/Aplinka/Bioaerozoliai/MapServer/0"
+LAYER_URL: Final = (
+    "https://opencity.idvilnius.lt/atviras/rest/services/Aplinka/Bioaerozoliai/MapServer/0"
+)
 UPDATE_INTERVAL: Final = timedelta(minutes=5)
 MAX_MEASUREMENT_AGE: Final = timedelta(hours=3)
 POLLEN_UNIT: Final = "vnt./m³"
 TIMESTAMP_FIELD: Final = "timestamp"
 DATA_FIELDS: Final = ("Alnus", "Ambrosia", "Artemisia", "Betula", "Corylus", "Poaceae")
+# Conservative site-specific data-quality guardrails, not medical thresholds.
+# They preserve sustained historical peaks while excluding values beyond the
+# defensible range of the complete Vilnius hourly series. Raw entities always
+# retain the unfiltered source value.
+PLAUSIBILITY_CEILINGS: Final = {
+    "Alnus": 10_000.0,
+    "Ambrosia": 5_000.0,
+    "Artemisia": 1_000.0,
+    "Betula": 15_000.0,
+    "Corylus": 2_500.0,
+    "Poaceae": 15_000.0,
+}
 RISK_OPTIONS: Final = ("low", "medium", "high", "very_high")
 SOURCE_RISK_LIMITS: Final = {
     "Alnus": (55, 116, 170),

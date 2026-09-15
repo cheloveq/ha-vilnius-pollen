@@ -1,11 +1,10 @@
 """Vilnius Pollen integration."""
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers import config_validation as cv
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.service import SupportsResponse
-
 import voluptuous as vol
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers.service import SupportsResponse
 
 from .api import VilniusPollenApiError, timestamp_from_arcgis
 from .const import DOMAIN, MAX_HISTORY_RECORDS, SERVICE_QUERY_HISTORY
@@ -47,7 +46,10 @@ def _async_register_history_service(hass: HomeAssistant) -> None:
         return {
             "source": "Vilnius OpenCity Bioaerozoliai layer 0",
             "records": [
-                {"timestamp": timestamp_from_arcgis(row["timestamp"]).isoformat(), **{key: row.get(key) for key in row if key != "timestamp"}}
+                {
+                    "timestamp": timestamp_from_arcgis(row["timestamp"]).isoformat(),
+                    **{key: row.get(key) for key in row if key != "timestamp"},
+                }
                 for row in records
             ],
         }
@@ -56,6 +58,14 @@ def _async_register_history_service(hass: HomeAssistant) -> None:
         DOMAIN,
         SERVICE_QUERY_HISTORY,
         async_query_history,
-        schema=vol.Schema({vol.Required("start"): cv.datetime, vol.Required("end"): cv.datetime, vol.Optional("limit", default=500): vol.All(vol.Coerce(int), vol.Range(min=1, max=MAX_HISTORY_RECORDS))}),
+        schema=vol.Schema(
+            {
+                vol.Required("start"): cv.datetime,
+                vol.Required("end"): cv.datetime,
+                vol.Optional("limit", default=500): vol.All(
+                    vol.Coerce(int), vol.Range(min=1, max=MAX_HISTORY_RECORDS)
+                ),
+            }
+        ),
         supports_response=SupportsResponse.ONLY,
     )

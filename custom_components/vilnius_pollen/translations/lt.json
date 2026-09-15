@@ -3,6 +3,8 @@
   "entity": {"sensor": {
     "alder": {"name": "Alksnio žiedadulkės"}, "ragweed": {"name": "Ambrozijos žiedadulkės"}, "mugwort": {"name": "Kiečio žiedadulkės"},
     "birch": {"name": "Beržo žiedadulkės"}, "hazel": {"name": "Lazdyno žiedadulkės"}, "grass": {"name": "Miglinių žiedadulkės"},
+    "alder_screened": {"name": "Alksnio žiedadulkės (filtruotos)"}, "ragweed_screened": {"name": "Ambrozijos žiedadulkės (filtruotos)"}, "mugwort_screened": {"name": "Kiečio žiedadulkės (filtruotos)"},
+    "birch_screened": {"name": "Beržo žiedadulkės (filtruotos)"}, "hazel_screened": {"name": "Lazdyno žiedadulkės (filtruotos)"}, "grass_screened": {"name": "Miglinių žiedadulkės (filtruotos)"},
     "alder_risk": {"name": "Alksnio simptomų rizika", "state": {"low": "Žema", "medium": "Vidutinė", "high": "Aukšta", "very_high": "Labai aukšta"}},
     "ragweed_risk": {"name": "Ambrozijos simptomų rizika", "state": {"low": "Žema", "medium": "Vidutinė", "high": "Aukšta", "very_high": "Labai aukšta"}},
     "mugwort_risk": {"name": "Kiečio simptomų rizika", "state": {"low": "Žema", "medium": "Vidutinė", "high": "Aukšta", "very_high": "Labai aukšta"}},
