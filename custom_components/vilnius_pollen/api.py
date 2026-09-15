@@ -22,7 +22,16 @@ class VilniusPollenApi:
         self._session = session
 
     async def async_latest(self) -> dict[str, Any]:
-        params = {"where": "1=1", "outFields": ",".join((TIMESTAMP_FIELD, *DATA_FIELDS, "device_id", "latitude", "longitude", "Status")), "orderByFields": f"{TIMESTAMP_FIELD} DESC", "resultRecordCount": "1", "returnGeometry": "false", "f": "json"}
+        params = {
+            "where": "1=1",
+            "outFields": ",".join(
+                (TIMESTAMP_FIELD, *DATA_FIELDS, "device_id", "latitude", "longitude", "Status")
+            ),
+            "orderByFields": f"{TIMESTAMP_FIELD} DESC",
+            "resultRecordCount": "1",
+            "returnGeometry": "false",
+            "f": "json",
+        }
         try:
             async with self._session.get(f"{LAYER_URL}/query", params=params) as response:
                 response.raise_for_status()
@@ -69,6 +78,6 @@ class VilniusPollenApi:
         return [dict(feature["attributes"]) for feature in payload.get("features", [])]
 
 
-def timestamp_from_arcgis(value: int | float) -> datetime:
+def timestamp_from_arcgis(value: float) -> datetime:
     """Convert an ArcGIS UTC millisecond timestamp to an aware datetime."""
     return datetime.fromtimestamp(value / 1000, tz=timezone.utc)

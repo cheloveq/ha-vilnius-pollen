@@ -12,6 +12,7 @@ It intentionally complements, rather than combines with, [ha-miesto-plauciai](ht
 
 - One-click setup: **Settings → Devices & services → Add integration → Vilnius Pollen**.
 - Hourly measurements for alder, birch, grass, hazel, mugwort, and ragweed pollen.
+- A separate plausibility-screened concentration for each taxon, suitable for dashboards, statistics, and automations without discarding the raw source value.
 - A separate source-derived **symptom-risk** label—Low, Medium, High, or Very high—for each taxon.
 - A source timestamp, five-minute coordinated polling, and availability protection when a measurement is more than three hours old.
 - Recorder history and long-term statistics from installation onward.
@@ -31,12 +32,26 @@ Copy `custom_components/vilnius_pollen` into your Home Assistant `config/custom_
 
 ## Entities and data semantics
 
-Each taxon has two entities:
+Each taxon has three entities:
 
-- A numeric pollen concentration in `vnt./m³`, with Home Assistant's `measurement` state class for history and statistics.
-- A separately named source-derived risk enum. It is an attributed presentation of Miesto Plaučiai's published bands, not medical advice and not a replacement for the measured concentration.
+- A raw numeric pollen concentration in `vnt./m³`, preserving the public source value exactly apart from display rounding.
+- A separately named **screened** concentration with the same unit and `measurement` state class. It becomes `unknown` when the source value is negative, non-numeric, non-finite, or above the taxon's conservative site-specific plausibility ceiling.
+- A separately named source-derived risk enum. It is suppressed to `unknown` when the corresponding concentration fails plausibility screening; otherwise it presents Miesto Plaučiai's published band and is not medical advice.
 
-Concentrations are rounded to one decimal place for useful display and statistics. The exact upstream float remains available as the entity's `source_value` attribute; risk banding uses that unrounded source value. A source null remains `unknown`.
+Concentrations are rounded to one decimal place for useful display and statistics. The exact upstream float remains available as the entity's `source_value` attribute. Raw, screened, and risk entities expose `data_quality` and `plausibility_ceiling` attributes. A source null remains `unknown`.
+
+The ceilings are quality-control guardrails derived conservatively from the complete Vilnius hourly history; they are neither biological maxima nor symptom thresholds:
+
+| Taxon | Ceiling (`vnt./m³`) |
+|---|---:|
+| Alder (`Alnus`) | 10,000 |
+| Ragweed (`Ambrosia`) | 5,000 |
+| Mugwort (`Artemisia`) | 1,000 |
+| Birch (`Betula`) | 15,000 |
+| Hazel (`Corylus`) | 2,500 |
+| Grass (`Poaceae`) | 15,000 |
+
+Mugwort uses the narrowest ceiling because the Vilnius series contains isolated multi-thousand spikes separated from a sustained historical range topping out around 600. Other taxa have credible sustained peaks in the low thousands, so a universal cap would incorrectly discard real seasonal events. The integration never clamps a suspect value to a fabricated boundary: the raw entity retains it, while the screened and risk entities become `unknown`.
 
 The layer-0 `Pollen` “total” field is intentionally excluded. It stopped receiving values in December 2021 and is not displayed by Miesto Plaučiai.
 
